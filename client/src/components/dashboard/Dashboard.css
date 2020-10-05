@@ -1,0 +1,44 @@
+.dashboard{
+    flex: 1;
+    background-color: #EBEEF0;
+    height: 100vh;
+}
+
+.dashboard_header{
+    background-color: white;
+    padding:15px;
+    color: #808080;
+}
+
+.dashboard_base{
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard_first{
+    display: flex;
+    
+}
+
+.dashboard_second{
+    padding: 15px;
+    display: flex;
+}
+
+.dashboard_second_pie{
+    flex: 0.4;
+    padding-left: 50px;
+    padding-top: 30px;
+}
+
+.dashboard_second_pie p{
+    background-color:#F66359;
+    padding: 5px 10px;
+    color: white;
+}
+
+
+
+.dashboard_second_line{
+    flex: 0.5;
+}
