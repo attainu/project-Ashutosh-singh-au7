@@ -1,6 +1,7 @@
 import axios from 'axios'
 import {loadUser} from './auth'
 import history from './../components/history'
+import { setAlert } from './alert'
 
 
 
@@ -9,7 +10,6 @@ export const postingfinal = (profile,userId) =>async dispatch => {
         const d =  new Date().toLocaleString()
         profile.User =  userId
         profile.date = d
-        // console.log(profile)
         const config = {
             headers: {
                 'Content-Type': 'application/json'
@@ -22,21 +22,9 @@ export const postingfinal = (profile,userId) =>async dispatch => {
             body,
             config
         )
-
-        // console.log(res) 
-        // console.log("user loaded ")
         dispatch(loadUser())
-        // console.log("did user loaded ")
-        // <Redirect to = "/app/sell" />s
-        // history.pushState('/app')
-        // if (res.data.status === 'success'){
-        //     dispatch(loadUser())
-        //     // return Redirect('/app/sell')
-        //     render(){
-        //         return <Redirect to = '/app/sell' />
-        //     }
-        // }
         history.push('/app/sell')
+        dispatch(setAlert('Receipt Generated', 'success'))
     }catch(err){
         console.log(err)
     }
@@ -96,7 +84,6 @@ try{
 
 export const customer = ({paymentType,revenue,distype,discount,name,phone,email,address,city,pincode}) => dispatch => {
     try{
-        // console.log("From action customer====>>>",paymentType,revenue,distype,discount,name,phone,email,address,city,pincode)
         if (address){
             dispatch({
                 type:'ADD_CUSTOMERDETAIL',

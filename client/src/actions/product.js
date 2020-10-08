@@ -1,10 +1,13 @@
 import _ from 'lodash'
 import axios from 'axios'
 import {loadUser} from './auth'
+import history from './../components/history'
+import { setAlert } from './alert'
+
 
 export const addProduct = ({productList, id}) => async dispatch => {
     const config = {
-        headers: {
+        headers: { 
             'Content-Type': 'application/json'
         }
     }
@@ -12,22 +15,21 @@ export const addProduct = ({productList, id}) => async dispatch => {
     let newData = {}
 
     try{
-        // console.log("from action", productList, id)
         productList.map(async product => {
             if (product.checking === 'marked') {
                 newData.details = product.detail
                 newData.category = product.category     
                 newData.price = product.price
                 newData.User = id
-                // console.log(newData)
                 let res = await axios.post("/api/v1/products",
                 newData,
                 config
                 )
-                // console.log(res)
             }  
         })
         dispatch(loadUser());
+        history.push('/app/products')
+        dispatch(setAlert('Product Added Successfully', 'success'))
     }catch(err){
         // console.log(err)
     }
@@ -171,32 +173,30 @@ export const updateSingleProductDetail = ({id, detail, category, price}) => asyn
         if(  price) {
             body.price = price
         }
-        // console.log(body)
         const config = {
             headers: {
                 'Content-Type': 'application/json'
             }
         }
-        // console.log(`/api/v1/products/${id}`)
         const res = await axios.patch(`/api/v1/products/${id}`,
             body,
             config
         )
-        // console.log(res.data)
         dispatch(loadUser())
         dispatch({
             type:"LOAD_PRODUCT",
             payload: res.data
-        })
+        }) 
+        history.push('/app/products')
+        dispatch(setAlert('Product Updated', 'success'))
     }catch(err){
-        // console.log(err)
+        console.log(err)
     }
 }
 
 
 export const increasingPage = ({sold}) => dispatch => {
     try{
-        // console.log("From action", sold)
         dispatch({
             type:"NEXT_PAGE",
             payload:{
@@ -210,7 +210,6 @@ export const increasingPage = ({sold}) => dispatch => {
 
 export const decreasingPage = ({sold}) => dispatch => {
     try{
-        // console.log("From action", sold)
         dispatch({
             type:"PREV_PAGE",
             payload:{
@@ -228,7 +227,6 @@ export const calculations = ({sold, data}) => dispatch => {
         let { filterDate, swiggy, zomato, foodpanda, store } = data
 
     let date = filterDate
-    // console.log(date)
 
     let d = new Date().toLocaleString()
 
@@ -237,27 +235,22 @@ export const calculations = ({sold, data}) => dispatch => {
     sold.map(s => {
         if (s.date){
             let date2 = s.date.split(" ")
-            // console.log(d.split(" ")[0] , date2[0])
             if (d.split(" ")[0] === date2[0]){
-                // console.log("matched")
                 soldData.push(s)
             }
         }
     })
 
-    // console.log("Filter sodl data =+=>>>", soldData)
 
     var grouped = _.groupBy(soldData, function(s) {
         return s.revenue;
     });
       
-    // console.log(grouped);
       
     foodpanda =   _.sumBy(grouped.Foodpanda, x => x.total)
     swiggy =   _.sumBy(grouped.Swiggy, x => x.total)
     zomato =   _.sumBy(grouped.Zomato, x => x.total)
     store =   _.sumBy(grouped.Store, x => x.total)
-    // console.log(foodpanda,swiggy,zomato,store)
     dispatch({
         type:"UPDATE_TODAYSALES",
         payload:{
